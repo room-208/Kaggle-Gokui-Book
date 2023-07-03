@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  core:
+    build:
+      context: ../
+      dockerfile: environments/Dockerfile
+    image: kaggle-gokui-book
+    container_name: kaggle-gokui-book
+    tty: true
+    volumes:
+      - ../../:/workspace
