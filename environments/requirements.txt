@@ -1,2 +1,7 @@
+# analysis tool
 timm
-torch
+segmentation-models-pytorch
+
+# formatter
+black
+isort
