@@ -19,8 +19,9 @@ jobs:
       - name: Install kaggle api
         run: pip install kaggle
 
-      - name: zip chapter
-        run: zip -r ./upload_kaggle_dir/chap2.zip ./chap2
+      - name: zip chapter2
+        run: zip -r ../upload_kaggle_dir/chap2.zip *
+        working-directory: ./chap2
 
       - name: Upload to kaggle
         env:
