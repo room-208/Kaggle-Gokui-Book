@@ -11,6 +11,8 @@ services:
     volumes:
       - ../:/workspace
       - kaggle-gokui-book-vscode-extensions:/root/.vscode-server/extensions/
+      - kaggle-gokui-book-kaggle-api:/root/.kaggle
 
 volumes:
   kaggle-gokui-book-vscode-extensions:
+  kaggle-gokui-book-kaggle-api:
