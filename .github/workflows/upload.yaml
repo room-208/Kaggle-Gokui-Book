@@ -23,6 +23,18 @@ jobs:
         run: zip -r ../upload_kaggle_dir/chap2.zip *
         working-directory: ./chap2
 
+      - name: zip chapter3
+        run: zip -r ../upload_kaggle_dir/chap3.zip *
+        working-directory: ./chap3
+
+      - name: zip chapter4
+        run: zip -r ../upload_kaggle_dir/chap4.zip *
+        working-directory: ./chap4
+
+      - name: zip chapter5
+        run: zip -r ../upload_kaggle_dir/chap5.zip *
+        working-directory: ./chap5
+      
       - name: Upload to kaggle
         env:
           KAGGLE_USERNAME: ${{ secrets.KaggleUsername }}
