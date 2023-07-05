@@ -21,4 +21,4 @@ def validate_1epoch(model, val_loader, lossfn, device):
 
     avg_loss = total_loss / len(val_loader.dataset)
     avg_acc = total_acc / len(val_loader.dataset)
-    return avg_loss, avg_acc
+    return avg_acc, avg_loss
