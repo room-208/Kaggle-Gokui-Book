@@ -1,9 +1,9 @@
-from torchvision.models import resnet50, ResNet50_Weights
+import torchvision
 from torch import nn
 
 
 def setup_model(device):
-    model = resnet50(weights=ResNet50_Weights.IMAGENET1K_V2)
+    model = torchvision.models.resnet50(pretrained=True)
     model.fc = nn.Linear(model.fc.in_features, 2)
     model = model.to(device)
     return model
