@@ -9,7 +9,7 @@ from loss import setup_lossfn
 from model import setup_model
 from predict import predict
 from train import train
-from writer import write_prediction
+from writer import write_prediction_with_clip
 
 
 def train_subsec5(data_dir, batch_size, device, dryrun=False):
@@ -24,7 +24,9 @@ def train_subsec5(data_dir, batch_size, device, dryrun=False):
 def predict_subsec5(data_dir, out_dir, model, batch_size, device, dryrun=False):
     loader, image_ids = setup_test_loader(data_dir, batch_size, dryrun)
     preds = predict(model, loader, device)
-    write_prediction(image_ids, preds, os.path.join(out_dir, "out.csv"))
+    write_prediction_with_clip(
+        image_ids, preds, 0.0125, os.path.join(out_dir, "out.csv")
+    )
 
 
 def run():
