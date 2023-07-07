@@ -1,9 +1,12 @@
+import copy
 import os
 
 import numpy as np
 from sklearn import model_selection
 from torch.utils.data import DataLoader, Subset
 from torchvision import datasets, transforms
+
+from augmentation import setup_center_crop_transform, setup_crop_flip_transform
 
 
 def setup_train_val_split(labels, dryrun=True, seed=0):
@@ -19,17 +22,6 @@ def setup_train_val_split(labels, dryrun=True, seed=0):
         val_indices = np.random.choice(val_indices, 100, replace=False)
 
     return train_indices, val_indices
-
-
-def setup_center_crop_transform():
-    return transforms.Compose(
-        [
-            transforms.Resize(256),
-            transforms.CenterCrop(224),
-            transforms.ToTensor(),
-            transforms.Normalize([0.485, 0.456, 0.406], [0.299, 0.224, 0.225]),
-        ]
-    )
 
 
 def get_labels(dataset):
@@ -79,3 +71,23 @@ def setup_test_loader(data_dir, batch_size, dryrun):
         image_ids = image_ids[:100]
     loader = DataLoader(dataset, batch_size=batch_size, num_workers=8)
     return loader, image_ids
+
+
+def setup_train_val_loaders2(data_dir, batch_size, dryrun=False):
+    train_dataset, val_dataset = setup_train_val_datasets(data_dir, dryrun)
+    train_dataset = copy.deepcopy(train_dataset)
+    train_transform = setup_crop_flip_transform()
+    train_dataset.transform = train_transform
+    train_loader = DataLoader(
+        train_dataset,
+        batch_size=batch_size,
+        shuffle=True,
+        drop_last=True,
+        num_workers=8,
+    )
+    val_loader = DataLoader(
+        val_dataset,
+        batch_size=batch_size,
+        num_workers=8,
+    )
+    return train_loader, val_loader
