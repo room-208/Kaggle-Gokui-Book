@@ -64,3 +64,18 @@ def setup_train_val_loaders(data_dir, batch_size, dryrun=False):
         num_workers=8,
     )
     return train_loader, val_loader
+
+
+def setup_test_loader(data_dir, batch_size, dryrun):
+    dataset = datasets.ImageFolder(
+        os.path.join(data_dir, "test"),
+        transform=setup_center_crop_transform(),
+    )
+    image_ids = [
+        os.path.splitext(os.path.basename(path))[0] for path, _ in dataset.imgs
+    ]
+    if dryrun:
+        dataset = Subset(dataset, range(0, 100))
+        image_ids = image_ids[:100]
+    loader = DataLoader(dataset, batch_size=batch_size, num_workers=8)
+    return loader, image_ids
