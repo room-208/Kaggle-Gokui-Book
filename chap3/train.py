@@ -19,7 +19,7 @@ def train_1epoch(model, train_loader, lossfn, optimizer, device):
         loss.backward()
         optimizer.step()
         total_loss += float(loss) * x.size(0)
-        _, pred = torch.max(out, dim=1)
+        _, pred = torch.max(out.detach(), dim=1)
         total_acc += torch.sum(pred == y)
 
     avg_loss = total_loss / len(train_loader.dataset)
@@ -53,7 +53,7 @@ def train_1epoch2(model, train_loader, lossfn, optimizer, lr_scheduler, device):
         optimizer.step()
         lr_scheduler.step()
         total_loss += float(loss) * x.size(0)
-        _, pred = torch.max(out, dim=1)
+        _, pred = torch.max(out.detach(), dim=1)
         total_acc += torch.sum(pred == y)
 
     avg_loss = total_loss / len(train_loader.dataset)
@@ -95,7 +95,7 @@ def train_1epoch_mixup(
         optimizer.step()
         lr_scheduler.step()
         total_loss += float(loss) * x.size(0)
-        _, pred = torch.max(out, dim=1)
+        _, pred = torch.max(out.detach(), dim=1)
         total_acc += lmd * torch.sum(pred == y) + (1.0 - lmd) * torch.sum(pred == y2)
 
     avg_loss = total_loss / len(train_loader.dataset)
