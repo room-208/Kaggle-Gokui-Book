@@ -12,7 +12,7 @@ def validate_1epoch(model, val_loader, lossfn, device):
             x = x.to(device)
             y = y.to(device)
             out = model(x)
-            loss = lossfn(out, y)
+            loss = lossfn(out.detach(), y)
             _, pred = torch.max(out, 1)
             total_loss += float(loss) * x.size(0)
             total_acc += torch.sum(pred == y)
