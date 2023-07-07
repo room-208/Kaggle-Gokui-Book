@@ -1,0 +1,1 @@
+python run3_4_2.py --data_dir ../data --dryrun --batch_size 10
