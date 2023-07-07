@@ -24,7 +24,7 @@ def run():
     out_dir = args.out_dir
     dryrun = args.dryrun
     batch_size = args.batch_size
-    n_epochs = 2 if dryrun else 10
+    n_epochs = 2 if dryrun else 6
 
     device = setup_device()
     model = setup_model(device)
