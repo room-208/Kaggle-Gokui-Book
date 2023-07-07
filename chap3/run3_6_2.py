@@ -26,6 +26,7 @@ def run():
     batch_size = args.batch_size
     n_epochs = 2 if dryrun else 10
     n_mixup_epochs = 1 if dryrun else 7
+    mixup_alpha = 0.4
 
     device = setup_device()
     model = setup_model(device)
@@ -46,8 +47,9 @@ def run():
         lr_scheduler,
         train_loader,
         val_loader,
-        n_mixup_epochs=n_mixup_epochs,
         n_epochs=n_epochs,
+        n_mixup_epochs=n_mixup_epochs,
+        mixup_alpha=mixup_alpha,
         device=device,
     )
 

@@ -110,14 +110,21 @@ def train3_mixup(
     lr_scheduler,
     train_loader,
     val_loader,
-    n_mixup_epochs,
     n_epochs,
+    n_mixup_epochs,
+    mixup_alpha,
     device,
 ):
     for epoch in tqdm(range(n_epochs)):
         if epoch < n_mixup_epochs:
             train_acc, train_loss = train_1epoch_mixup(
-                model, train_loader, lossfn, optimizer, lr_scheduler, device
+                model,
+                train_loader,
+                lossfn,
+                optimizer,
+                lr_scheduler,
+                mixup_alpha,
+                device,
             )
         else:
             train_acc, train_loss = train_1epoch2(
