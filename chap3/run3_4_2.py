@@ -13,7 +13,7 @@ from writer import write_prediction
 
 
 def train_subsec5(data_dir, batch_size, device, dryrun=False):
-    model = setup_model()
+    model = setup_model(device)
     optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
     lossfn = setup_lossfn()
     train_loader, val_loader = setup_train_val_loaders(data_dir, batch_size, dryrun)
