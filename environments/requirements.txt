@@ -1,6 +1,7 @@
 # analysis tool
 timm
 segmentation-models-pytorch
+wandb
 
 # formatter
 black
