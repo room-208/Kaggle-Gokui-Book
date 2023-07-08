@@ -2,6 +2,7 @@ import copy
 import os
 
 import numpy as np
+import torch
 from sklearn import model_selection
 from torch.utils.data import DataLoader, Subset
 from torchvision import datasets, transforms
@@ -91,3 +92,10 @@ def setup_train_val_loaders2(data_dir, batch_size, dryrun=False):
         num_workers=8,
     )
     return train_loader, val_loader
+
+
+def set_transform(dataset, transform):
+    if isinstance(dataset, torch.utils.data.Subset):
+        set_transform(dataset.dataset, transform)
+    else:
+        dataset.transform = transform

@@ -1,9 +1,13 @@
 import argparse
+import copy
 import os
 
 from torch import optim
+from torch.utils.data import DataLoader
 
-from dataloader import setup_test_loader, setup_train_val_loaders2
+from augmentation import setup_crop_flip_transform
+from dataloader import (set_transform, setup_test_loader,
+                        setup_train_val_datasets)
 from device import setup_device
 from loss import setup_lossfn
 from model import setup_model
@@ -24,13 +28,26 @@ def run():
     out_dir = args.out_dir
     dryrun = args.dryrun
     batch_size = args.batch_size
-    n_epochs = 2 if dryrun else 6
+    n_epochs = 2 if dryrun else 10
 
     device = setup_device()
     model = setup_model(device)
     lossfn = setup_lossfn()
 
-    train_loader, val_loader = setup_train_val_loaders2(data_dir, batch_size, dryrun)
+    train_dataset, val_dataset = setup_train_val_datasets(data_dir, dryrun=dryrun)
+    train_dataset = copy.deepcopy(train_dataset)  # transformを設定した際にval_datasetに影響したくない
+    train_transform = setup_crop_flip_transform()
+    set_transform(train_dataset, train_transform)
+    train_loader = DataLoader(
+        train_dataset,
+        batch_size=batch_size,
+        shuffle=True,
+        drop_last=True,
+        num_workers=8,
+    )
+    val_loader = DataLoader(
+        val_dataset, batch_size=batch_size, num_workers=8
+    )
 
     optimizer = optim.SGD(
         model.parameters(), lr=0.01, momentum=0.9, weight_decay=0.0001
