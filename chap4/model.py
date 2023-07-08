@@ -21,6 +21,12 @@ class ResNetOfftheShelfGeM(nn.Module):
         return x
 
 
+def setup_model(device):
+    model = ResNetOfftheShelfGeM(pretrained=True)
+    model = model.to(device)
+    return model
+
+
 if __name__ == "__main__":
     model = ResNetOfftheShelfGeM(pretrained=True)
     img = torch.rand(8, 3, 128, 128)
