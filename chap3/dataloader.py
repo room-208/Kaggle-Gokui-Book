@@ -78,7 +78,7 @@ def setup_train_val_loaders2(data_dir, batch_size, dryrun=False):
     train_dataset, val_dataset = setup_train_val_datasets(data_dir, dryrun)
     train_dataset = copy.deepcopy(train_dataset)
     train_transform = setup_crop_flip_transform()
-    train_dataset.transform = train_transform
+    set_transform(train_dataset, train_transform)
     train_loader = DataLoader(
         train_dataset,
         batch_size=batch_size,
@@ -95,7 +95,8 @@ def setup_train_val_loaders2(data_dir, batch_size, dryrun=False):
 
 
 def set_transform(dataset, transform):
-    if isinstance(dataset, torch.utils.data.Subset):
+    print(f"isinstance(dataset, Subset) = {isinstance(dataset, Subset)}")
+    if isinstance(dataset, Subset):
         set_transform(dataset.dataset, transform)
     else:
         dataset.transform = transform
