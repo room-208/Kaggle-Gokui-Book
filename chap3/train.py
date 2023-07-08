@@ -28,7 +28,7 @@ def train_1epoch(model, train_loader, lossfn, optimizer, device):
 
 
 def train(model, lossfn, optimizer, train_loader, val_loader, n_epochs, device):
-    for epoch in tqdm(range(n_epochs)):
+    for epoch in tqdm(range(n_epochs), total=n_epochs):
         train_acc, train_loss = train_1epoch(
             model, train_loader, lossfn, optimizer, device
         )
@@ -64,7 +64,7 @@ def train_1epoch2(model, train_loader, lossfn, optimizer, lr_scheduler, device):
 def train2(
     model, lossfn, optimizer, lr_scheduler, train_loader, val_loader, n_epochs, device
 ):
-    for epoch in tqdm(range(n_epochs)):
+    for epoch in tqdm(range(n_epochs), total=n_epochs):
         train_acc, train_loss = train_1epoch2(
             model, train_loader, lossfn, optimizer, lr_scheduler, device
         )
@@ -115,7 +115,7 @@ def train3_mixup(
     mixup_alpha,
     device,
 ):
-    for epoch in tqdm(range(n_epochs)):
+    for epoch in tqdm(range(n_epochs), total=n_epochs):
         if epoch < n_mixup_epochs:
             train_acc, train_loss = train_1epoch_mixup(
                 model,

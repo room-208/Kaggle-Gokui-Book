@@ -8,7 +8,7 @@ def validate_1epoch(model, val_loader, lossfn, device):
     total_acc = 0.0
 
     with torch.no_grad():
-        for x, y in tqdm(val_loader):
+        for x, y in tqdm(val_loader, total=len(val_loader)):
             x = x.to(device)
             y = y.to(device)
             out = model(x)

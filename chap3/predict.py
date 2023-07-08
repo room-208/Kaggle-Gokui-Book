@@ -7,7 +7,7 @@ def predict(model, loader, device):
     pred_fun = torch.nn.Softmax(dim=1)
     preds = []
     with torch.no_grad():
-        for x, _ in tqdm(loader):
+        for x, _ in tqdm(loader, total=len(loader)):
             x = x.to(device)
             out = model(x)
             y = pred_fun(out)
