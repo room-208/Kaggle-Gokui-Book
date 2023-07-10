@@ -1,7 +1,7 @@
 from torchvision import transforms
 
 
-def setup_crop_flip_transform(input_size):
+def setup_transform(input_size):
     return transforms.Compose(
         [
             transforms.RandomResizedCrop(input_size),
