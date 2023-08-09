@@ -2,7 +2,3 @@
 timm
 segmentation-models-pytorch
 wandb
-
-# formatter
-black
-isort
