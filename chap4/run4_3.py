@@ -5,12 +5,11 @@ import torch
 from cirtorch.datasets.genericdataset import ImagesFromList
 from cirtorch.datasets.testdataset import configdataset
 from cirtorch.utils.evaluate import compute_map_and_print
+from device import setup_device
+from model import setup_model
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from tqdm import tqdm
-
-from device import setup_device
-from model import setup_model
 from transform import setup_transform
 
 
