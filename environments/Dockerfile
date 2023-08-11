@@ -30,10 +30,10 @@ RUN cd /opt &&\
   git clone https://github.com/filipradenovic/cnnimageretrieval-pytorch
 ENV PYTHONPATH $PYTHONPATH:/opt/models/research:/opt/cnnimageretrieval-pytorch
 
-# nltk
-RUN python -c "import nltk; nltk.download('stopwords'); nltk.download('punkt')"
-
 COPY environments/requirements.txt ./
 RUN pip install --upgrade pip && pip install -r requirements.txt
+
+# nltk
+RUN python -c "import nltk; nltk.download('stopwords'); nltk.download('punkt')"
 
 WORKDIR /workspace
