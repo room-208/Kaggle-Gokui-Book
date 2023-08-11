@@ -1,0 +1,1 @@
+python train.py --path_train_csv ../data/gldv2_micro/train.csv --path_val_csv ../data/gldv2_micro/val.csv --checkpoint_path ../outputs/arcface_last.pth --gldv2_micro_path ../data/gldv2_micro

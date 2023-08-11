@@ -5,12 +5,14 @@ import numpy as np
 import pandas as pd
 import torch
 from PIL import Image
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import DataLoader, Dataset, Subset
 from torch.utils.data.sampler import RandomSampler, SequentialSampler
 
 
-def filename_to_filepath(filename: str) -> str:
-    return f"gldv2_micro/images/{filename}"
+def filename_to_filepath(row) -> str:
+    gldv2_micro_path = row["gldv2_micro_path"]
+    filename = row["filename"]
+    return f"{gldv2_micro_path}/images/{filename}"
 
 
 class GLDv2MiniDataset(Dataset):
@@ -29,7 +31,7 @@ class GLDv2MiniDataset(Dataset):
 
     def __getitem__(self, index):
         row = self.dataframe.iloc[index]
-        assert Path(row["filepath"]).exists()
+        assert Path(row["filepath"]).exists(), row["filepath"]
 
         im = np.array(Image.open(row["filepath"]))
         im = self.transform(image=im)["image"]
@@ -40,8 +42,10 @@ class GLDv2MiniDataset(Dataset):
 
 
 def get_dataloaders(
+    dryrun: bool,
     path_train_csv: str,
     path_val_csv: str,
+    gldv2_micro_path: str,
     train_transform: Any,
     val_transform: Any,
     train_batch_size: int = 8,
@@ -49,12 +53,18 @@ def get_dataloaders(
     num_workers: int = 8,
 ) -> Dict[str, DataLoader]:
     df_trn = pd.read_csv(path_train_csv)
-    df_trn["filepath"] = df_trn["filename"].apply(filename_to_filepath)
     df_val = pd.read_csv(path_val_csv)
-    df_val["filepath"] = df_val["filename"].apply(filename_to_filepath)
+    df_trn["gldv2_micro_path"] = gldv2_micro_path
+    df_val["gldv2_micro_path"] = gldv2_micro_path
+    df_trn["filepath"] = df_trn.apply(filename_to_filepath, axis=1)
+    df_val["filepath"] = df_val.apply(filename_to_filepath, axis=1)
 
     dataset_train = GLDv2MiniDataset(df_trn, train_transform)
     dataset_val = GLDv2MiniDataset(df_val, val_transform, is_test=True)
+
+    if dryrun:
+        dataset_train = Subset(dataset_train, range(0, 100))
+        dataset_val = Subset(dataset_val, range(0, 100))
 
     dataloaders = {}
     dataloaders["train"] = DataLoader(
