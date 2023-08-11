@@ -18,18 +18,18 @@ def save_checkpoint(model: Any, epoch: int, path: Path):
 
 
 def extract_vectors(
-    data_dir,
     model,
     image_files,
     input_size,
     out_dim,
     transform,
-    device,
+    device_str,
     bbxs=None,
+    print_freq=1000,
 ):
-    dataloader = DataLoader(
+    dataloader = torch.utils.data.DataLoader(
         ImagesFromList(
-            root=data_dir,
+            root="",
             images=image_files,
             imsize=input_size,
             transform=transform,
@@ -43,33 +43,21 @@ def extract_vectors(
 
     with torch.no_grad():
         vecs = torch.zeros(out_dim, len(image_files))
-        for i, x in tqdm(enumerate(dataloader), total=len(dataloader)):
-            x = x.to(device)
-            try:
-                embed = model(x).squeeze()
-            except TypeError:
-                embed = model.extract_features(x)
-            vecs[:, i] = embed
-            # print(embed.shape)
-
+        for i, X in enumerate(dataloader):
+            if i % print_freq == 0:
+                print(f"Processing {i} of {len(dataloader.dataset)}")
+            X = X.to(device_str)
+            vecs[:, i] = model.extract_features(X)
     return vecs
 
 
-def get_query_index_images(cfg, dryrun):
+def get_query_index_images(cfg):
     index_images = [cfg["im_fname"](cfg, i) for i in range(cfg["n"])]
     query_images = [cfg["qim_fname"](cfg, i) for i in range(cfg["nq"])]
-    bbxs = [tuple(cfg["gnd"][i]["bbx"]) for i in range(cfg["nq"])]
-    # try:
-    #    bbxs = [tuple(cfg["gnd"][i]["bbx"]) for i in range(cfg["nq"])]
-    # except KeyError:
-    #    bbxs = None
 
-    if dryrun:
-        index_images = index_images[:10]
-        query_images = query_images[:10]
-        bbxs = bbxs[:10]
+    try:
+        bbxs = [tuple(cfg["gnd"][i]["bbx"]) for i in range(cfg["nq"])]
+    except KeyError:
+        bbxs = None
 
-    print("len(index_images)=", len(index_images))
-    print("len(query_images)=", len(query_images))
-    print("len(bbxs)=", len(bbxs))
     return index_images, query_images, bbxs
