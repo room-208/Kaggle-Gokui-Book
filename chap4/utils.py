@@ -66,7 +66,10 @@ def extract_vectors(
         vecs = torch.zeros(out_dim, len(image_files))
         for i, x in tqdm(enumerate(dataloader), total=len(dataloader)):
             x = x.to(device)
-            embed = model(x).squeeze()
+            try:
+                embed = model(x).squeeze()
+            except TypeError:
+                embed = model.extract_features(x)
             vecs[:, i] = embed
             # print(embed.shape)
 
