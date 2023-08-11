@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import torch
 from PIL import Image
-from torch.utils.data import DataLoader, Dataset, Subset
+from torch.utils.data import DataLoader, Dataset
 from torch.utils.data.sampler import RandomSampler, SequentialSampler
 
 
@@ -31,7 +31,7 @@ class GLDv2MiniDataset(Dataset):
 
     def __getitem__(self, index):
         row = self.dataframe.iloc[index]
-        assert Path(row["filepath"]).exists(), row["filepath"]
+        assert Path(row["filepath"]).exists()
 
         im = np.array(Image.open(row["filepath"]))
         im = self.transform(image=im)["image"]
@@ -42,7 +42,6 @@ class GLDv2MiniDataset(Dataset):
 
 
 def get_dataloaders(
-    dryrun: bool,
     path_train_csv: str,
     path_val_csv: str,
     gldv2_micro_path: str,
@@ -61,10 +60,6 @@ def get_dataloaders(
 
     dataset_train = GLDv2MiniDataset(df_trn, train_transform)
     dataset_val = GLDv2MiniDataset(df_val, val_transform, is_test=True)
-
-    if dryrun:
-        dataset_train = Subset(dataset_train, range(0, 100))
-        dataset_val = Subset(dataset_val, range(0, 100))
 
     dataloaders = {}
     dataloaders["train"] = DataLoader(
