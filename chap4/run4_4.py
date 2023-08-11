@@ -14,6 +14,7 @@ def run():
     parser.add_argument("--device", default="cpu", type=str)
     parser.add_argument("--dryrun", action="store_true", default=False)
     parser.add_argument("--batch_size", default=512, type=int)
+    parser.add_argument("--outputs_dir", required=True)
     args = parser.parse_args()
 
     data_dir = args.data_dir
@@ -24,6 +25,7 @@ def run():
     device = args.device
     dryrun = args.dryrun
     batch_size = args.batch_size
+    outputs_dir = args.outputs_dir
 
     train(
         path_train_csv,
@@ -36,6 +38,7 @@ def run():
     )
     evaluate(
         data_dir,
+        outputs_dir,
         checkpoint_path,
         dryrun=dryrun,
         device=device,

@@ -11,6 +11,7 @@ from utils import extract_vectors, get_query_index_images
 
 def evaluate(
     data_dir: str,
+    outputs_dir: str,
     checkpoint_path: str,
     dryrun: bool,
     input_size: int = 256,
@@ -73,19 +74,19 @@ def evaluate(
 
         # 時間節約のため中間ファイルに保存
         np.save(
-            Path(data_dir, f"{dataset_name}_index.npy"),
+            Path(outputs_dir, f"{dataset_name}_index.npy"),
             index_vectors.astype(np.float32),
         )
         np.save(
-            Path(data_dir, f"{dataset_name}_query.npy"),
+            Path(outputs_dir, f"{dataset_name}_query.npy"),
             query_vectors.astype(np.float32),
         )
 
     # 大域特徴をロードして、内積に基づいて順位付けして評価
     for dataset_name, dataset_config in datasets.items():
         # shape = (n_dims, n_images)
-        index_vectors = np.load(Path(data_dir, f"{dataset_name}_index.npy"))
-        query_vectors = np.load(Path(data_dir, f"{dataset_name}_query.npy"))
+        index_vectors = np.load(Path(outputs_dir, f"{dataset_name}_index.npy"))
+        query_vectors = np.load(Path(outputs_dir, f"{dataset_name}_query.npy"))
 
         # shape = (n_index_images, n_query_images)
         scores = np.dot(index_vectors.T, query_vectors)
@@ -98,14 +99,17 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_dir", required=True)
+    parser.add_argument("--outputs_dir", required=True)
     parser.add_argument("--checkpoint_path", required=True)
     args = parser.parse_args()
 
     data_dir = args.data_dir
+    outputs_dir = args.outputs_dir
     checkpoint_path = args.checkpoint_path
 
     evaluate(
         data_dir,
+        outputs_dir,
         checkpoint_path,
         dryrun=True,
         device="cpu",
