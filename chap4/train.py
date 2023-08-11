@@ -5,17 +5,16 @@ import torch.nn as nn
 from angular_model import AngularModel
 from augmentation import get_augmentations
 from gldv2dataset import get_dataloaders
+from metrics import AverageMeter, accuracy
 from torch.optim.lr_scheduler import CosineAnnealingLR
-from torch.utils.data import Subset
-from utils import AverageMeter, accuracy, save_checkpoint
+from utils import save_checkpoint
 
 
 def train(
     path_train_csv: str,  # "gldv2_micro/train.csv"
     path_val_csv: str,  # "gldv2_micro/val.csv"
-    checkpoint_path: str,  # "outputs/arcface_last.pth"
+    outputs_dir: str,  # "outputs"
     gldv2_micro_path: str,
-    dryrun: bool,
     input_size: int = 128,
     num_epochs: int = 10,
     batch_size: int = 128,
@@ -26,7 +25,6 @@ def train(
 ):
     train_transform, val_transform = get_augmentations(input_size)
     dataloaders = get_dataloaders(
-        dryrun,
         path_train_csv,
         path_val_csv,
         gldv2_micro_path,
@@ -37,19 +35,11 @@ def train(
         num_workers=num_workers,
     )
 
-    if isinstance(dataloaders["train"].dataset, Subset):
-        model = AngularModel(
-            n_classes=dataloaders["train"].dataset.dataset.n_classes,
-            model_name=backbone,
-            pretrained=True,
-        )
-    else:
-        model = AngularModel(
-            n_classes=dataloaders["train"].dataset.n_classes,
-            model_name=backbone,
-            pretrained=True,
-        )
-
+    model = AngularModel(
+        n_classes=dataloaders["train"].dataset.n_classes,
+        model_name=backbone,
+        pretrained=True,
+    )
     optimizer = torch.optim.Adam(model.parameters(), lr=init_lr)
 
     ttl_iters = num_epochs * len(dataloaders["train"])
@@ -114,7 +104,7 @@ def train(
             )
         )
 
-        save_checkpoint(model, epoch + 1, Path(checkpoint_path))
+        save_checkpoint(model, epoch + 1, Path(outputs_dir, "arcface_last.pth"))
 
 
 if __name__ == "__main__":
@@ -123,21 +113,24 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--path_train_csv", required=True)
     parser.add_argument("--path_val_csv", required=True)
-    parser.add_argument("--checkpoint_path", required=True)
+    parser.add_argument("--outputs_dir", required=True)
     parser.add_argument("--gldv2_micro_path", required=True)
+    parser.add_argument("--batch_size", default=64, type=int)
+    parser.add_argument("--device", default="cuda", type=str)
     args = parser.parse_args()
 
     path_train_csv = args.path_train_csv
     path_val_csv = args.path_val_csv
-    checkpoint_path = args.checkpoint_path
+    outputs_dir = args.outputs_dir
     gldv2_micro_path = args.gldv2_micro_path
+    batch_size = args.batch_size
+    device = args.device
 
     train(
-        path_train_csv,
-        path_val_csv,
-        checkpoint_path,
-        gldv2_micro_path,
-        dryrun=True,
-        batch_size=8,
-        device="cpu",
+        path_train_csv=path_train_csv,
+        path_val_csv=path_val_csv,
+        outputs_dir=outputs_dir,
+        gldv2_micro_path=gldv2_micro_path,
+        batch_size=batch_size,
+        device=device,
     )
