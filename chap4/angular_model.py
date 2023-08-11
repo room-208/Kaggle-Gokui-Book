@@ -1,7 +1,7 @@
 import timm
 import torch
 from arcface import ArcMarginProduct
-from cirtorch.layers.pooling import GeM
+from gem import GeM
 from torch import nn
 
 
@@ -10,6 +10,7 @@ class AngularModel(nn.Module):
         self,
         n_classes=7770,
         model_name="resnet34",
+        pooling="GeM",
         margin=0.3,
         scale=30,
         fc_dim=512,
