@@ -1,5 +1,9 @@
 FROM kaggle/python:latest
 
+# build tools
+RUN apt-get update
+RUN apt-get install build-essential wget unzip -y
+
 # Protocol Buffers
 RUN cd /opt &&\
   wget https://github.com/google/protobuf/releases/download/v3.3.0/protoc-3.3.0-linux-x86_64.zip &&\
@@ -23,8 +27,11 @@ RUN mkdir parameters &&\
 
 # cirtorch
 RUN cd /opt &&\
-    git clone https://github.com/filipradenovic/cnnimageretrieval-pytorch
+  git clone https://github.com/filipradenovic/cnnimageretrieval-pytorch
 ENV PYTHONPATH $PYTHONPATH:/opt/models/research:/opt/cnnimageretrieval-pytorch
+
+# nltk
+RUN python -c "import nltk; nltk.download('stopwords'); nltk.download('punkt')"
 
 COPY environments/requirements.txt ./
 RUN pip install --upgrade pip && pip install -r requirements.txt

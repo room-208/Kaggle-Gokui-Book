@@ -1,4 +1,10 @@
-# analysis tool
+# image
 timm
-segmentation-models-pytorch
-wandb
+opencv-python
+albumentations
+pandas
+tensorflow
+tf-slim
+faiss-gpu
+matplotlib
+pydegensac
