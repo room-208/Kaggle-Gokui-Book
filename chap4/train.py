@@ -131,6 +131,7 @@ if __name__ == "__main__":
         path_val_csv=path_val_csv,
         outputs_dir=outputs_dir,
         gldv2_micro_path=gldv2_micro_path,
+        input_size=256,
         batch_size=batch_size,
         device=device,
     )

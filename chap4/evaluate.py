@@ -93,5 +93,6 @@ if __name__ == "__main__":
     evaluate(
         roxford5k_root_dir=roxford5k_root_dir,
         outputs_dir=outputs_dir,
-        device="cpu",
+        input_size=256,
+        device=device,
     )
