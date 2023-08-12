@@ -51,6 +51,18 @@ EMBEDDING_DIR = DATA_DIR / "embeddings"
 GLOVE_PATH = EMBEDDING_DIR / "glove.840B.300d.bin"
 FEATURE_MEMORY = joblib.Memory(DATA_DIR / "cache")
 
+print(
+    DATA_DIR,
+    EMBEDDING_DIR,
+    FEATURE_MEMORY,
+    GLOVE_PATH,
+    INPUT_DIR,
+    NUM_PROCESSES,
+    OUTPUT_DIR,
+    TEST_CSV_PATH,
+    TRAIN_CSV_PATH,
+)
+
 model_params = {
     "objective": "binary",
     "metric": "binary_logloss",
