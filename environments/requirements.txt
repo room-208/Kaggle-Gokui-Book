@@ -132,3 +132,6 @@ widgetsnbextension
 xxhash
 yarl
 zipp
+
+# from ot import emd2 No module named 'ot'
+pot
