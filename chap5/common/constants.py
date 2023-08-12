@@ -3,9 +3,9 @@ from pathlib import Path
 
 import joblib
 
-DATA_DIR = Path("../data") # Path(os.getenv("QQP_DATA_DIR", "/data"))
+DATA_DIR = Path("../data")  # Path(os.getenv("QQP_DATA_DIR", "/data"))
 INPUT_DIR = DATA_DIR / "input"
-OUTPUT_DIR = Path("../output")
+OUTPUT_DIR = Path("../outputs")
 TRAIN_CSV_PATH = INPUT_DIR / "train.csv"
 TEST_CSV_PATH = INPUT_DIR / "test.csv"
 EMBEDDING_DIR = DATA_DIR / "embeddings"
