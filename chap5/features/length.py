@@ -1,8 +1,7 @@
 import numpy as np
 import pandas as pd
-from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-
 from common.constants import FEATURE_MEMORY
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from texts.preprocessing import get_dataset, get_stopwords
 
 
@@ -44,7 +43,7 @@ def build_length_features(dataset_key, stopwords_key, n=1):
 
     vectorizer = CountVectorizer(
         tokenizer=lambda s: s.split(),
-        stop_words=stopwords,
+        stop_words=list(stopwords),  # stopwords,
         ngram_range=(n, n),
         binary=True,
     )
