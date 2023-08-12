@@ -1,19 +1,5 @@
-import argparse
-from pathlib import Path
-
-import joblib
 import pandas as pd
-from common.constants import (
-    DATA_DIR,
-    EMBEDDING_DIR,
-    FEATURE_MEMORY,
-    GLOVE_PATH,
-    INPUT_DIR,
-    NUM_PROCESSES,
-    OUTPUT_DIR,
-    TEST_CSV_PATH,
-    TRAIN_CSV_PATH,
-)
+from common.constants import NUM_PROCESSES, OUTPUT_DIR, TRAIN_CSV_PATH
 from common.utils import compute_weights
 from experiments.gbm_common import run_kfold
 from features.decomposition import (
@@ -35,33 +21,6 @@ from features.word_vector import (
     build_wmd_features,
 )
 from texts.preprocessing import EmbeddingKey, PreprocessingKey, StopwordsKey
-
-parser = argparse.ArgumentParser()
-parser.add_argument("--DATA_DIR", required=True, type=str)
-parser.add_argument("--OUTPUT_DIR", required=True, type=str)
-args = parser.parse_args()
-
-DATA_DIR = Path(args.DATA_DIR)
-OUTPUT_DIR = Path(args.OUTPUT_DIR)
-
-INPUT_DIR = DATA_DIR / "input"
-TRAIN_CSV_PATH = INPUT_DIR / "train.csv"
-TEST_CSV_PATH = INPUT_DIR / "test.csv"
-EMBEDDING_DIR = DATA_DIR / "embeddings"
-GLOVE_PATH = EMBEDDING_DIR / "glove.840B.300d.bin"
-FEATURE_MEMORY = joblib.Memory(DATA_DIR / "cache")
-
-print(
-    DATA_DIR,
-    EMBEDDING_DIR,
-    FEATURE_MEMORY,
-    GLOVE_PATH,
-    INPUT_DIR,
-    NUM_PROCESSES,
-    OUTPUT_DIR,
-    TEST_CSV_PATH,
-    TRAIN_CSV_PATH,
-)
 
 model_params = {
     "objective": "binary",

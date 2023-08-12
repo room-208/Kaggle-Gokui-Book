@@ -1,12 +1,17 @@
-import argparse
-import os
 from pathlib import Path
 
 import joblib
 
-DATA_DIR = Path("../data")  # Path(os.getenv("QQP_DATA_DIR", "/data"))
+IS_KAGGLE = True
+
+if IS_KAGGLE:
+    DATA_DIR = Path("/kaggle/input/chap5-data")
+    OUTPUT_DIR = Path("/kaggle/working/")
+else:
+    DATA_DIR = Path("../data")  # Path(os.getenv("QQP_DATA_DIR", "/data"))
+    OUTPUT_DIR = Path("../outputs")
+
 INPUT_DIR = DATA_DIR / "input"
-OUTPUT_DIR = Path("../outputs")
 TRAIN_CSV_PATH = INPUT_DIR / "train.csv"
 TEST_CSV_PATH = INPUT_DIR / "test.csv"
 EMBEDDING_DIR = DATA_DIR / "embeddings"
