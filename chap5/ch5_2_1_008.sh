@@ -1,0 +1,1 @@
+python ch5_2_1_008.py --DATA_DIR ../data --OUTPUT_DIR ../outputs
