@@ -5,7 +5,7 @@ import joblib
 IS_KAGGLE = True
 
 if IS_KAGGLE:
-    DATA_DIR = Path("/kaggle/input/chap5-data")
+    DATA_DIR = Path("/kaggle/working/chap5-data")
     OUTPUT_DIR = Path("/kaggle/working/")
 else:
     DATA_DIR = Path("../data")  # Path(os.getenv("QQP_DATA_DIR", "/data"))
