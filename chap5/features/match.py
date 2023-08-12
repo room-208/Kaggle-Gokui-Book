@@ -1,8 +1,7 @@
 import pandas as pd
+from common.constants import EPS, FEATURE_MEMORY
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.preprocessing import normalize
-
-from common.constants import EPS, FEATURE_MEMORY
 from texts.preprocessing import get_dataset, get_stopwords
 
 
@@ -49,7 +48,7 @@ def build_match_features(preprocessing_key, stopwords_key, n=1):
 
     count_vectorizer = CountVectorizer(
         tokenizer=lambda s: s.split(),
-        stop_words=stopwords,
+        stop_words=list(stopwords),  # stopwords,
         ngram_range=(n, n),
         binary=True,
     )
