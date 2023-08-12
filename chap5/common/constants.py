@@ -30,8 +30,8 @@ def set_constants_by_args():
 
     global DATA_DIR, OUTPUT_DIR, INPUT_DIR, TRAIN_CSV_PATH, TEST_CSV_PATH, EMBEDDING_DIR, GLOVE_PATH, FEATURE_MEMORY
 
-    DATA_DIR = args.DATA_DIR
-    OUTPUT_DIR = args.OUTPUT_DIR
+    DATA_DIR = Path(args.DATA_DIR)
+    OUTPUT_DIR = Path(args.OUTPUT_DIR)
 
     INPUT_DIR = DATA_DIR / "input"
     TRAIN_CSV_PATH = INPUT_DIR / "train.csv"
