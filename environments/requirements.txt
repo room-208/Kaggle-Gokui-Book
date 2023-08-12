@@ -107,7 +107,7 @@ scikit-learn
 scipy
 Send2Trash
 six
-sklearn
+# sklearn
 smart-open
 sniffio
 terminado
