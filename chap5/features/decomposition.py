@@ -2,11 +2,10 @@ from enum import Enum
 
 import numpy as np
 import pandas as pd
+from common.constants import FEATURE_MEMORY
 from sklearn.decomposition import NMF, TruncatedSVD
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.pipeline import make_pipeline
-
-from common.constants import FEATURE_MEMORY
 from texts.preprocessing import get_dataset, get_stopwords
 
 
@@ -25,21 +24,21 @@ def get_vectorizer(vectorizer_type, ngram_range, stopwords):
     return {
         VectorizerType.COUNT: CountVectorizer(
             tokenizer=lambda x: x.split(),
-            stop_words=stopwords,
+            stop_words=list(stopwords),  # stopwords,
             ngram_range=ngram_range,
             min_df=5,
             binary=True,
         ),
         VectorizerType.TFIDF_L2: TfidfVectorizer(
             tokenizer=lambda x: x.split(),
-            stop_words=stopwords,
+            stop_words=list(stopwords),  # stopwords,
             ngram_range=ngram_range,
             min_df=5,
             binary=True,
         ),
         VectorizerType.TFIDF_NONE: TfidfVectorizer(
             tokenizer=lambda x: x.split(),
-            stop_words=stopwords,
+            stop_words=list(stopwords),  # stopwords,
             ngram_range=ngram_range,
             min_df=5,
             norm=None,
