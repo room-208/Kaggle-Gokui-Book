@@ -3,12 +3,6 @@ import time
 import numpy as np
 import pandas as pd
 import torch
-from sklearn.preprocessing import StandardScaler
-from torch import nn as nn
-from torch.nn import functional as F
-from torch.optim import Adam
-from tqdm import tqdm
-
 from features.decomposition import (
     DecompositionType,
     VectorizerType,
@@ -27,13 +21,16 @@ from features.word_vector import (
     build_farthest_word_distance_features,
     build_wmd_features,
 )
+from sklearn.preprocessing import StandardScaler
 from texts.preprocessing import EmbeddingKey, PreprocessingKey, StopwordsKey
+from torch import nn as nn
+from torch.nn import functional as F
+from torch.optim import Adam
+from tqdm import tqdm
 
 
 class LSTMExtractor(nn.Module):
-    def __init__(
-        self, embedding_matrix, hidden_units, num_layers=2, dropout=0.2
-    ):
+    def __init__(self, embedding_matrix, hidden_units, num_layers=2, dropout=0.2):
         super(LSTMExtractor, self).__init__()
         self.embeddings = nn.Embedding(
             embedding_matrix.shape[0], embedding_matrix.shape[1]
@@ -41,7 +38,7 @@ class LSTMExtractor(nn.Module):
         self.embeddings.weight = nn.Parameter(
             torch.tensor(embedding_matrix, dtype=torch.float32),
             requires_grad=False,
-        )
+        )  # embeddingのパラメータに埋め込み行列を使う。
         self.bilstm = nn.LSTM(
             hidden_size=hidden_units,
             input_size=embedding_matrix.shape[1],
@@ -53,9 +50,14 @@ class LSTMExtractor(nn.Module):
 
     def forward(self, xs):
         hidden_units = self.bilstm(self.embeddings(xs))[0]
+        # hidden_unitsは [2*hidden_size]*系列帳のサイズのベクトルになっている。
+        # 2はbidirectional=Trueから来ている。
         return torch.cat(
             [torch.mean(hidden_units, 1), torch.max(hidden_units, 1)[0]], 1
         )
+        # torch.mean、torch.maxは系列長でプーリングする処理を行っている。
+        # torch.max(hidden_units, 1) では、max, argmaxが返ってくるので[0]を指定している。
+        # 4 * hidden_unitsのサイズでreturnしている。
 
 
 def train_1epoch(model, optimizer, data_loader, device):
@@ -66,9 +68,7 @@ def train_1epoch(model, optimizer, data_loader, device):
         *inputs, targets, weights = [b.to(device) for b in batch]
         optimizer.zero_grad()
         logits = model(*inputs)
-        loss = F.binary_cross_entropy_with_logits(
-            logits, targets, weight=weights
-        )
+        loss = F.binary_cross_entropy_with_logits(logits, targets, weight=weights)
         loss.backward()
         losses.append(loss.detach().cpu().item())
         optimizer.step()
@@ -81,9 +81,7 @@ def predict_logits(model, data_loader, device):
     with torch.no_grad():
         logits = []
         losses = []
-        for batch in tqdm(
-            data_loader, total=len(data_loader), desc="Predicting"
-        ):
+        for batch in tqdm(data_loader, total=len(data_loader), desc="Predicting"):
             # batchの最後の要素が重みで、最後から2番目の要素がターゲット、残りの要素がモデルへの入力という仮定をしている。
             *inputs, targets, weights = [b.to(device) for b in batch]
             batch_logits = model(*inputs)
