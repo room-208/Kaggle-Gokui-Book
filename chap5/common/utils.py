@@ -7,6 +7,7 @@ import numpy as np
 import torch
 
 
+# yield中の実行時間を返す
 @contextmanager
 def simple_timer(message, logger=None):
     start_time = time.time()
