@@ -4,7 +4,6 @@ from pathlib import Path
 
 import click
 import pandas as pd
-
 from common.constants import (
     NUM_DRYRUN_SAMPLES,
     NUM_TEST_SAMPLES,
@@ -14,9 +13,7 @@ from common.constants import (
 
 
 def get_output_dir(experiment_name, dryrun=False):
-    output_dir = (
-        OUTPUT_DIR / "dryrun" if dryrun else OUTPUT_DIR
-    ) / experiment_name
+    output_dir = (OUTPUT_DIR / "dryrun" if dryrun else OUTPUT_DIR) / experiment_name
     output_dir.mkdir(parents=True, exist_ok=True)
     return output_dir
 
@@ -52,9 +49,7 @@ def save_results(output_dir, config, fold_id, result, oof_df):
         index=False,
     )
     get_config_output_path(output_dir).write_text(json.dumps(config, indent=2))
-    get_result_output_path(output_dir, fold_id).write_text(
-        json.dumps(result, indent=2)
-    )
+    get_result_output_path(output_dir, fold_id).write_text(json.dumps(result, indent=2))
 
 
 def aggregate_oof_predictions(log_dir):
@@ -66,7 +61,9 @@ def aggregate_oof_predictions(log_dir):
         else:
             oof_df.loc[
                 ~fold_oof_df["is_duplicate"].isnull(), "is_duplicate"
-            ] = fold_oof_df[~fold_oof_df["is_duplicate"].isnull()]
+            ] = fold_oof_df[
+                ~fold_oof_df["is_duplicate"].isnull()
+            ]  # train部分はnp.nanで入っている。
     oof_df.to_csv(log_dir / "oof_prediction.csv", index=False)
 
 
@@ -84,9 +81,7 @@ def aggregate_test_predictions(log_dir):
     if len(files) > 0:
         submission_df["is_duplicate"] /= len(files)
         submission_df.to_csv(log_dir / "tst_prediction.csv", index=False)
-        print(
-            f"Aggregated predictions {files} into {log_dir / 'tst_prediction.csv'}"
-        )
+        print(f"Aggregated predictions {files} into {log_dir / 'tst_prediction.csv'}")
 
 
 def summarize_results(log_dir):
@@ -117,9 +112,7 @@ def default_cli(experiment_file, train_1fold, predict_1fold, config):
                 f"If you want to rerun training, please delete a directory {result_path}"
             )
         else:
-            train_1fold(
-                output_dir, fold_id, config, num_workers, device, dryrun
-            )
+            train_1fold(output_dir, fold_id, config, num_workers, device, dryrun)
 
     def predict_if_necessary(dryrun, device, num_workers, fold_id):
         output_dir = get_output_dir(experiment_name, dryrun)
@@ -130,22 +123,16 @@ def default_cli(experiment_file, train_1fold, predict_1fold, config):
                 f"If you want to rerun training, please delete a directory {output_file}"
             )
         else:
-            predict_1fold(
-                output_dir, fold_id, config, num_workers, device, dryrun
-            )
+            predict_1fold(output_dir, fold_id, config, num_workers, device, dryrun)
 
     @click.command()
-    @click.option(
-        "--dryrun", is_flag=True, help="Trueの時はデバッグ用に作成した小さなデータセットを使用する"
-    )
+    @click.option("--dryrun", is_flag=True, help="Trueの時はデバッグ用に作成した小さなデータセットを使用する")
     @click.option(
         "--device",
         default="cuda",
         help="モデルの訓練・推論に用いるデバイス (複数のGPUを利用するケースは考えていない)",
     )
-    @click.option(
-        "--num_workers", default=4, help="DatasetLoaderで利用するのワーカーの個数"
-    )
+    @click.option("--num_workers", default=4, help="DatasetLoaderで利用するのワーカーの個数")
     @click.option(
         "--fold_id", default=0, help="fold_id番目の分割でtrainとvalidationのデータセットを分ける"
     )
@@ -154,9 +141,7 @@ def default_cli(experiment_file, train_1fold, predict_1fold, config):
         is_flag=True,
         help="Trueの時は0からn_splits-1までの全てのfoldで訓練する. この時fold_idのあたいは無視される",
     )
-    @click.option(
-        "--needs_predict", is_flag=True, help="このフラグが指定されたときは訓練後に予測も行う"
-    )
+    @click.option("--needs_predict", is_flag=True, help="このフラグが指定されたときは訓練後に予測も行う")
     def train(dryrun, device, num_workers, fold_id, fold_all, needs_predict):
         output_dir = get_output_dir(experiment_name, dryrun)
         folds = range(config["n_splits"]) if fold_all else [fold_id]
