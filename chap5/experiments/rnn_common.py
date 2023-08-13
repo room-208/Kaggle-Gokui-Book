@@ -65,6 +65,7 @@ def train_1epoch(model, optimizer, data_loader, device):
     losses = []
     for batch in tqdm(data_loader, total=len(data_loader), desc="Training"):
         # batchの最後の要素が重みで、最後から2番目の要素がターゲット、残りの要素がモデルへの入力という仮定をしている。
+        # 重みとは、LB probingのやつのこと
         *inputs, targets, weights = [b.to(device) for b in batch]
         optimizer.zero_grad()
         logits = model(*inputs)
